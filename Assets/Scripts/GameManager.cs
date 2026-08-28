@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private float xInput = 0f;
 
+    [SerializeField]
+    private GameObject ballLine;
+
     public static GameManager instance;
     void Awake()
     {
@@ -44,23 +47,23 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        RotateBall();
+
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
             ShootBall();
-        }
+        
 
         if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
-        {
-            xInput = -1f;
-        }
+            xInput = -0.05f;
+        
         else if(Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
-        {
-            xInput = 1f;
-        }
+            xInput = 0.05f;
+        
         else
-        {
-            xInput = 0f;    
-        }
+         xInput = 0f;    
+        
+        if(Keyboard.current.backquoteKey.wasPressedThisFrame)
+            StopBall();
        
     }
     private void SetBall(BallColor col, int index)
@@ -75,12 +78,24 @@ public class GameManager : MonoBehaviour
     {
         Rigidbody rb = cueBall.GetComponent<Rigidbody>();
         rb.AddRelativeForce(Vector3.forward * 50, ForceMode.Impulse);
+
+        ballLine.SetActive(false);
     }
-    private void RotateCueBall()
+    private void RotateBall()
     {
         if (cueBall != null)
         {
-            cueBall.transform.Rotate(new Vector3(0f,xInput,0f));
+            cueBall.transform.Rotate(new Vector3(0f, xInput, 0f));
         }
+    }
+
+    private void StopBall()
+    {
+        Rigidbody rb = cueBall.GetComponent<Rigidbody>();
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        cueBall.transform.eulerAngles= Vector3.zero;
+
+        ballLine.SetActive(true);
     }
 }
