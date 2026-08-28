@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject cueBall;
 
+    [SerializeField]
+    private float xInput = 0f;
+
     public static GameManager instance;
     void Awake()
     {
@@ -45,6 +48,20 @@ public class GameManager : MonoBehaviour
         {
             ShootBall();
         }
+
+        if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+        {
+            xInput = -1f;
+        }
+        else if(Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+        {
+            xInput = 1f;
+        }
+        else
+        {
+            xInput = 0f;    
+        }
+       
     }
     private void SetBall(BallColor col, int index)
     {
@@ -56,7 +73,14 @@ public class GameManager : MonoBehaviour
 
     private void ShootBall()
     {
-     Rigidbody rb = cueBall.GetComponent<Rigidbody>();
+        Rigidbody rb = cueBall.GetComponent<Rigidbody>();
         rb.AddRelativeForce(Vector3.forward * 50, ForceMode.Impulse);
+    }
+    private void RotateCueBall()
+    {
+        if (cueBall != null)
+        {
+            cueBall.transform.Rotate(new Vector3(0f,xInput,0f));
+        }
     }
 }
